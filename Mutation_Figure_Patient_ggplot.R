@@ -1,6 +1,6 @@
 ## This will take the results file that was created using the combineMAF code and create 2 mutation files
 setwd('./')
-results      = read.csv("TNBC_5197_results_for_fig.csv", header=T, stringsAsFactors = F)
+results      = read.csv("ovary_granulosa_7008_for_fig.csv", header=T, stringsAsFactors = F, sep="\t")
 
 # If you are doing a sample set where there are multiple components you can use this to set the overall samples to get individual plots
 # Otherwise this is just set to make all samples from one patient to make one plot.
@@ -58,7 +58,7 @@ rownames(muts) = 1:nrow(muts)
 #muts = muts[muts$ANN....GENE %in% mutation_genes,]
 ###########################################################################
 
-return_gene_order   = F
+return_gene_order   = T
 sort_samples        = T
 sort_genes          = T
 show_sample_names   = T
@@ -70,6 +70,10 @@ include_percentages = T
 sample_name_col     = "TUMOR_SAMPLE"
 
 #### Make a matrix of "blank" values the with nrow= #mutations and ncol=#samples
+#sample_names <- c("JRF-rgyn-077-R", "JRF-rgyn-077-P", "JRF-rgyn-076-R", "JRF-rgyn-076-P", "JRF-rgyn-043-R2", "JRF-rgyn-043-R1", "JRF-rgyn-043-P", "JRF-rgyn-018-R", "JRF-rgyn-018-P")
+
+#sample_names <- c("JRF-rgyn-018-P", "JRF-rgyn-018-R", "JRF-rgyn-043-P", "JRF-rgyn-043-R1", "JRF-rgyn-043-R2", "JRF-rgyn-076-P", "JRF-rgyn-076-R", "JRF-rgyn-077-P", "JRF-rgyn-077-R")
+
 mutation_heatmap <- matrix(9, nrow=sum(unlist(lapply(sample_names, length))), ncol=sum(unlist(lapply(mutation_genes, length))))
 rownames(mutation_heatmap) <- unlist(sample_names)
 colnames(mutation_heatmap) <- paste(mutation_genes)
@@ -98,20 +102,21 @@ cat9 <- c("nonsense_snv","synonymous_variant","Silent", "splice_region_variant&s
 
 #### For each row read the Effect and create the type based on which category it fits in
 #### If there is an error because the mutation type is unknow just add it to the correct category above
+smallmaf$mut_type = '0'
 for (i in 1:nrow(smallmaf)) {
   if(!TCGA) { type = smallmaf$ANN....EFFECT[i] } else { type = smallmaf$Variant_Classification[i] }
-  if (type %in% cat1) { type = 1
-  } else if (type %in% cat2) { type = 2
-  } else if (type %in% cat3) { type = 3
-  } else if (type %in% cat4) { type = 4
-  } else if (type %in% cat5) { type = 5 
-  } else if (type %in% cat6) { type = 6
-  } else if (type %in% cat7) { type = 7
-  } else if (type %in% cat8) { type = 8
-  } else if (type %in% cat9) { type = 9
+  if (type %in% cat1) { type = 1; smallmaf$mut_type[i] = 'A'
+  } else if (type %in% cat2) { type = 2; smallmaf$mut_type[i] = 'B'
+  } else if (type %in% cat3) { type = 3; smallmaf$mut_type[i] = 'C'
+  } else if (type %in% cat4) { type = 4; smallmaf$mut_type[i] = 'D'
+  } else if (type %in% cat5) { type = 5; smallmaf$mut_type[i] = 'E'
+  } else if (type %in% cat6) { type = 6; smallmaf$mut_type[i] = 'F'
+  } else if (type %in% cat7) { type = 7; smallmaf$mut_type[i] = 'G'
+  } else if (type %in% cat8) { type = 8; smallmaf$mut_type[i] = 'H'
+  } else if (type %in% cat9) { type = 9; smallmaf$mut_type[i] = 'I'
   } else {print(paste(i,type,sep="_"))
     stop("Mutation type not found")}
-  print(paste(i,type,sep="_"))
+    print(paste(i,type,sep="_"))
   
   if (!TCGA) { 
     if (mutation_heatmap[which(rownames(mutation_heatmap)==smallmaf$TUMOR_SAMPLE[i],), which(colnames(mutation_heatmap)==smallmaf$ANN....GENE[i])] > type) {
@@ -125,6 +130,7 @@ for (i in 1:nrow(smallmaf)) {
 CCFgroup_heatmap <-matrix(0, nrow=sum(unlist(lapply(sample_names, length))), ncol=sum(unlist(lapply(mutation_genes, length))))
 rownames(CCFgroup_heatmap) <- unlist(sample_names)
 colnames(CCFgroup_heatmap) <- mutation_genes
+
 
 for (i in 1:nrow(smallmaf)) {
   type = smallmaf$CCF_group[i] 
@@ -159,7 +165,7 @@ if(sort_genes) {
 
 
 if(remove_genes_with_no_mutation) { mutation_heatmap <- mutation_heatmap[,which(unlist(apply(mutation_heatmap,2, function(x){length(which(x!=10))}))!=0)] }
-order_heatmap = ifelse(mutation_heatmap==9, 2, 1)
+#order_heatmap = ifelse(mutation_heatmap==9, 2, 1)
 i=1
 for (i in 1 :ncol(mutation_heatmap)){
   mutation_heatmap = mutation_heatmap[ order(order_heatmap[,ncol(mutation_heatmap)-(i-1)]) , ]
@@ -180,7 +186,7 @@ colkey[5,2]="#FF7F00"
 colkey[6,2]="#FFFF33"
 colkey[7,2]="#A65628"
 colkey[8,2]="#808080"
-colkey[9,2]="gray90"
+colkey[9,2]="gray85"
 
 
 width=height=NULL
@@ -189,27 +195,60 @@ if (width<4){width=4}
 if (is.null(height)) { height = 1+(length(unlist(sample_names)))/2 }
 if (height<4){height=4}
 
+colnames(mutation_heatmap) <- c("18-P", "18-R", "43-P", "43-R1", "43-R2", "76-P" , "76-R", "77-P", "77-R")
+
+mutation_heatmap <- t(mutation_heatmap)
+
+mutation_heatmap <- mutation_heatmap[,c("BMPR1A", "STAG2", "YES1", "TSC2", "RFWD2", "RET", "NOTCH1", "MGA", "KMT2C", "IGF1R", "EGFR", "ERCC5", "ALK", "ROS1", "FGFR3", "FGF3", "MET", "SOX17", "NFE2L2", "MAP3K14", "FAT1", "ERCC4", "ASXL1", "KMT2D", "ZFHX3", "POLD1", "MTOR", "FGFR4", "TERT", "FOXL2")]
+
 #### Create empty pdf
-pdf(plot_file, width=width, height=height)
+height = height+1
+pdf(plot_file, width=height, height=width)
 if (show_sample_names) { top=8 } else {top = 2}
 if (include_percentages) { right= 4 } else { right=1 }
+
+
 
 #### Plot figure
 par(oma=c(2,8,1,1), mar=c(2,5,top,right))
 image(mutation_heatmap, xaxt='n', yaxt='n', col=colkey[,2], zlim=c(1,9), xlab="", ylab="")
-axis(2, at=seq(0, 1, 1/(ncol(mutation_heatmap)-1)), labels=colnames(mutation_heatmap), las=2, tick=F, cex.axis=2, font = 2, family = 'sans')
-axis(3, at=seq(0, 1, 1/(nrow(mutation_heatmap)-1)), labels=rownames(mutation_heatmap), las=2, tick=F, cex.axis=1.5, font = 3, family = 'sans')
+axis(2, at=seq(0, 1, 1/(ncol(mutation_heatmap)-1)), labels=colnames(mutation_heatmap), las=2, tick=F, cex.axis=2, font = 3, family = 'sans')
+axis(3, at=seq(0, 1, 1/(nrow(mutation_heatmap)-1)), labels=rownames(mutation_heatmap), las=2, tick=F, cex.axis=2, font = 1, family = 'sans')
 abline(v=(0:nrow(mutation_heatmap)/(nrow(mutation_heatmap)-1)+(1/(2*(nrow(mutation_heatmap)-1)))), col = "white")
 abline(h=(0:ncol(mutation_heatmap)/(ncol(mutation_heatmap)-1)+(1/(2*(ncol(mutation_heatmap)-1)))), col = "white")
 dev.off()
+mutation_heatmap <- t(mutation_heatmap)
 
+##########################
+## Mutation type ggplot ##
+##########################
+df11 <-as.data.frame(cbind(smallmaf$TUMOR_SAMPLE, smallmaf$ANN....GENE, smallmaf$Cancer_Cell_Fraction, smallmaf$Clonal_Status, smallmaf$loh, smallmaf$mut_type))
+
+colnames(df11) <- c("samples", "genes", "ccf", "clone", "loh", "mut_type")
+
+df11 <- as.data.frame(lapply(df11, function(x) {sub("JRF-rgyn-0", "", x)})) ## Modify samples names (if required)
+
+df11$genes <- factor(df11$genes, levels = dput(rownames(mutation_heatmap)))
+
+cols <- c('A'="#CD1719",'B'="#984EA3",'C'="#377EB8",'D'="#4DAF4A",'E'="#FF7F00",'F'="#FFFF33",'G'="#A65628", 'H' = "#808080", 'I' = "gray85")
+
+comb<-expand.grid(samples = unique(df11$samples), genes = unique(df11$genes), ccf=".", clone = ".", loh=".", mut_type="I")
+
+df33 <- merge(comb, df11, by = c("samples", "genes", "ccf", "clone", "loh", "mut_type"), all = TRUE)
+
+df22<-subset(df11,clone=="Clonal")
+
+pdf("Mut_type_ggplot.pdf", width=height, height=width)
+
+p <- ggplot(df33, aes(x=samples,y=genes,fill=mut_type,group=loh)) + geom_tile(width=0.8,height=0.8) + geom_tile(data=df22,aes(samples, genes),size=1,fill=NA,width=0.8,height=0.8,color="gold3") + scale_fill_manual(values = cols, name="CCF",guide = FALSE); p + geom_segment( aes(x=xmin,xend=xmax,y=ymin,yend=ymax), subset(ggplot_build(p)$data[[1]],group==2), inherit.aes=F,color="white",size=0.5) + theme(axis.text.x=element_text(size=20,  family = "sans", angle = 90, hjust=0, vjust=0)) + theme(axis.text.y=element_text(size=20, face="italic", family = "sans")) + scale_x_discrete(name="",position="top",drop=FALSE) + scale_y_discrete(name="",drop=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), panel.border = element_blank()) + theme(legend.position="none") + theme(axis.ticks = element_blank()) + theme(axis.text=element_text(colour = "black"))
+
+dev.off()
+###########################
 
 gene_order = rownames(mutation_heatmap)#[length(rownames(mutation_heatmap)):1]
 samp_order = colnames(mutation_heatmap)
 
 if(return_gene_order) { list(rev(colnames(mutation_heatmap))) }
-
-
 
 return_gene_order   = F
 sort_samples        = T
@@ -382,6 +421,7 @@ dev.off()
 ##########################
 library(ggplot2)
 
+
 df1<-as.data.frame(cbind(muts$TUMOR_SAMPLE, muts$ANN....GENE, muts$Cancer_Cell_Fraction, muts$Clonal_Status, muts$loh, muts$CCF_group))
 
 colnames(df1) <- c("samples", "genes", "ccf", "clone", "loh", "ccf_groupA")
@@ -395,21 +435,25 @@ for (i in 1:nrow(df1)){
   if(df1$ccf_groupA[i] == 1){df1$ccf_groupB[i]= 'E'}
 }
 
-#df1 <- as.data.frame(lapply(df1, function(x) {sub("JRF-bcmet-023-", "", x)})) ## Modify samples names
+df1 <- as.data.frame(lapply(df1, function(x) {sub("JRF-rgyn-0", "", x)})) ## Modify samples names (if required)
 
-cols <- c('A'="#08306B",'B'="#08519C",'C'="#2171B5",'D'="#6BAED6",'E'="#9ECAE1",'F'="#C6DBEF",'G'="gray83")
+cols <- c('A'="#08306B",'B'="#08519C",'C'="#2171B5",'D'="#6BAED6",'E'="#9ECAE1",'F'="#C6DBEF",'G'="gray85")
 
 df2<-subset(df1,clone=="Clonal")
 
 df1$genes <- factor(df1$genes, levels = dput(rownames(mutation_heatmap)))
 
+df1$samples <- factor(df1$samples, levels = c("18-P", "18-R", "43-P", "43-R1", "43-R2", "76-P", "76-R", "77-P", "77-R"))
+
 comb<-expand.grid(samples = unique(df1$samples), genes = unique(df1$genes), ccf=".", clone = ".", loh=".", ccf_groupA = ".", ccf_groupB="G")
 
 df3 <- merge(comb, df1, by = c("samples", "genes", "ccf", "clone", "loh", "ccf_groupA", "ccf_groupB"), all = TRUE)
 
-pdf("CCF_Heatmap_ggplot.pdf",height=4, width=8) ## Change size of the plot
+height=height+2
+pdf("CCF_Heatmap_ggplot.pdf", width=height, height=width) ## Change size of the plot
 
-p <- ggplot(df3, aes(x=genes,y=samples,fill=ccf_groupB, group=loh)) + geom_tile(width=0.9,height=0.9) + geom_tile(data=df2,aes(genes,samples),size=1,fill=NA,width=0.9,height=0.9,color="goldenrod") + scale_fill_manual(values = cols, name="CCF",guide = FALSE); p + geom_segment( aes(x=xmin,xend=xmax,y=ymin,yend=ymax), subset(ggplot_build(p)$data[[1]],group==2), inherit.aes=F,color="white",size=1) + theme(axis.text=element_text(size=12, face="bold")) + scale_x_discrete(name="",position="top",drop=FALSE) + scale_y_discrete(name="",drop=FALSE) + theme(axis.text.x = element_text(angle = 60, hjust=0, vjust=0)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank() + theme(legend.position="none"))
+#label_color <- c("black","red","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black")
+
+p <- ggplot(df3, aes(x=samples,y=genes,fill=ccf_groupB, group=loh)) + geom_tile(width=0.8,height=0.8) + geom_tile(data=df2,aes(samples, genes),size=1,fill=NA,width=0.8,height=0.8,color="gold3") + scale_fill_manual(values = cols, name="CCF",guide = FALSE); p + geom_segment( aes(x=xmin,xend=xmax,y=ymin,yend=ymax), subset(ggplot_build(p)$data[[1]],group==2), inherit.aes=F,color="white",size=1) + theme(axis.text.x=element_text(size=30,  family = "sans", angle = 88, hjust=0, vjust=0)) + theme(axis.text.y=element_text(size=30, face="italic", family = "sans")) + scale_x_discrete(name="",position="top",drop=FALSE) + scale_y_discrete(name="",drop=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), panel.border = element_blank()) + theme(legend.position="none") + theme(axis.ticks = element_blank()) + theme(axis.text=element_text(colour = "black"))
 
 dev.off()
-#}
