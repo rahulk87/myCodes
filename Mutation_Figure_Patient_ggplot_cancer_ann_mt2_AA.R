@@ -38,7 +38,7 @@ muts                 = muts[order(muts$TUMOR_SAMPLE, decreasing=F),]
 
 ###### Do any necessary filtering of mutation dataframe ########
 #muts = subset(muts, subset = muts$patient == "RG6T") #| muts$TUMOR_SAMPLE == "AM2" | muts$TUMOR_SAMPLE == "AM3" | muts$TUMOR_SAMPLE == "AM4" | muts$TUMOR_SAMPLE == "AM5 - Primary_AME" | muts$TUMOR_SAMPLE == "AM6" | muts$TUMOR_SAMPLE == "AM7" | muts$TUMOR_SAMPLE == "AM32AME1")# & muts$TUMOR_SAMPLE != "AM8-Ips-Breast-Rec-Carc" & muts$TUMOR_SAMPLE != "AM5 - Axillary_Lymph_Node_Metastasis" & muts$TUMOR_SAMPLE != "AM46T2" & muts$TUMOR_SAMPLE != "AM5 - Primary_Carcarcinoma" & muts$TUMOR_SAMPLE != "AM8-LNE" & muts$TUMOR_SAMPLE != "AM8-LNM")
-muts = subset(muts, subset = muts$SYMBOL != "synonymous_variant")# & muts$ANN....EFFECT != "splice_region_variant&synonymous_variant" & muts$ANN....EFFECT != "downstream_ANN....GENE_variant" 
+muts = subset(muts, subset = muts$Variant_Classification != "synonymous_variant")# & muts$ANN....EFFECT != "splice_region_variant&synonymous_variant" & muts$ANN....EFFECT != "downstream_ANN....GENE_variant" 
 #           & muts$ANN....EFFECT != "intron_variant" & muts$ANN....EFFECT != "frameshift_variant&splice_donor_variant&splice_region_variant&splice_region_variant&intron_variant"
 #& muts$ANN....EFFECT != "non_coding_exon_variant|synonymous_variant" & muts$ANN....EFFECT != "SYNONYMOUS_CODING" & muts$ANN....EFFECT != "splice_acceptor_variant&splice_region_variant&intron_variant" & muts$ANN....EFFECT != "Silent")
 #muts = subset(muts, subset = muts$ANN....EFFECT != "downstream_gene_variant|synonymous_variant" & muts$ANN....EFFECT != "upstream_gene_variant|5_prime_UTR_variant")
