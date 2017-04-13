@@ -247,28 +247,6 @@ p <- ggplot(df33, aes(x=samples,y=genes,fill=mut_type,group=loh)) + geom_tile(wi
 
 dev.off()
 
-######## More than two ####
-genes <- c("KEAP1", "TGFBR1", "TET1", "TERT", "TBX3", "SPOP", "SMO", "SF3B1", "PTPRT", "PTEN", "PRKAR1A", "PIK3C2G", "PDPK1", "PAK1", "NFE2L2", "MYOD1", "MRE11A", "MITF", "MEN1", "MED12", "MDM2", "LATS1", "KDM5A", "JAK2", "IL7R", "IDH2", "HGF", "GRIN2A", "GATA1", "FLT1", "FGFR1", "EZH2", "ETV1", "ESR1", "ERBB4", "DCUN1D1", "CTCF", "CRLF2", "CBL", "BTK", "BRIP1", "BMPR1A", "BLM", "BCL2", "YES1", "XPO1", "TP63", "TOP1", "TMPRSS2", "SUFU", "STAG2", "SOX2", "ROS1", "RET", "RASA1", "PTPRS", "PBRM1", "NTRK3", "NTRK2", "NSD1", "NOTCH3", "MYCN", "MET", "MAP3K13", "KIT", "KDM5C", "JAK1", "IGF1", "FAT1", "EPHB1", "EPHA5", "CARD11", "BCOR", "ATRX", "ASXL2", "ARID2", "APC", "AMER1", "KDM6A", "NTRK1", "PMS1", "HNF1A", "SHQ1", "PIK3R2", "EED", "MSH6", "U2AF1", "HRAS", "HIST1H1C", "CIC", "PHOX2B", "CCND1", "CDKN2A", "BAP1", "NKX2-1", "RB1", "KMT2A", "PTPRD", "PDGFRA", "E2F3", "PTCH1", "ALOX12B")
-
-mutation_heatmap_red <- mutation_heatmap[!grepl(paste(genes, collapse="|"), rownames(mutation_heatmap)), ]
- 
-df11_red <- df11[!grepl(paste(genes, collapse="|"), df11$genes), ]
-
-df11_red$genes <- factor(df11_red$genes, levels = dput(rev(rownames(mutation_heatmap_red))))
-
-cols <- c('A'="#CD1719",'B'="#984EA3",'C'="#377EB8",'D'="#4DAF4A",'E'="#FF7F00",'F'="#FFFF33",'G'="#A65628", 'H' = "#808080", 'I' = "gray85")
-
-comb<-expand.grid(samples = unique(df11_red$samples), genes = unique(df11_red$genes), ccf=".", clone = ".", loh=".", mut_type="I", types = 9)
-
-df33_red <- as.data.frame(rbind(comb, df11_red))
-
-df22_red <-subset(df11_red,clone=="Clonal")
-
-pdf("Mut_type_ggplot_2.pdf", width=4, height=8)
-
-p <- ggplot(df33_red, aes(x=samples,y=genes,fill=mut_type,group=loh)) + geom_tile(width=0.8,height=0.8) + scale_fill_manual(values = cols, name="CCF",guide = FALSE); p + geom_segment( aes(x=xmin,xend=xmax,y=ymin,yend=ymax), subset(ggplot_build(p)$data[[1]],group==2), inherit.aes=F,color="white",size=0.5) + theme(axis.text.x=element_text(size=6,  family = "sans", angle = 90, hjust=0, vjust=0)) + theme(axis.text.y=element_text(size=6, face="italic", family = "sans")) + scale_x_discrete(name="",position="top",drop=FALSE) + scale_y_discrete(name="",drop=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), panel.border = element_blank()) + theme(legend.position="none") + theme(axis.ticks = element_blank()) + theme(axis.text=element_text(colour = "black"))
-
-dev.off()
 ###########################
 
 gene_order = rownames(mutation_heatmap)#[length(rownames(mutation_heatmap)):1]
@@ -447,8 +425,6 @@ dev.off()
 ##########################
 library(ggplot2)
 
-#df1<-as.data.frame(cbind(muts$TUMOR_SAMPLE, muts$ANN....GENE, muts$Cancer_Cell_Fraction, muts$Clonal_Status, muts$loh, muts$CCF_group))
-
 df1 <-as.data.frame(cbind(smallmaf$TUMOR_SAMPLE, smallmaf$SYMBOL, smallmaf$Cancer_Cell_Fraction, smallmaf$Clonal_Status, smallmaf$loh, smallmaf$CCF_group, smallmaf$types))
 
 colnames(df1) <- c("samples", "genes", "ccf", "clone", "loh", "ccf_groupA", "types")
@@ -487,27 +463,3 @@ pdf("CCF_Heatmap_ggplot.pdf", width=height, height=width) ## Change size of the 
 p <- ggplot(df3, aes(x=samples,y=genes,fill=ccf_groupB, group=loh)) + geom_tile(width=0.8,height=0.8) + geom_tile(data=df2,aes(samples, genes),size=1,fill=NA,width=0.8,height=0.8,color="gold3") + scale_fill_manual(values = cols, name="CCF",guide = FALSE); p + geom_segment( aes(x=xmin,xend=xmax,y=ymin,yend=ymax), subset(ggplot_build(p)$data[[1]],group==2), inherit.aes=F,color="white",size=1) + theme(axis.text.x=element_text(size=20,  family = "sans", angle = 90, hjust=0, vjust=0)) + theme(axis.text.y=element_text(size=20, face="italic", family = "sans")) + scale_x_discrete(name="",position="top",drop=FALSE) + scale_y_discrete(name="",drop=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), panel.border = element_blank()) + theme(legend.position="none") + theme(axis.ticks = element_blank()) + theme(axis.text=element_text(colour = "black"))
 
 dev.off()
-
-######## More than two ####
-genes <- c("KEAP1", "TGFBR1", "TET1", "TERT", "TBX3", "SPOP", "SMO", "SF3B1", "PTPRT", "PTEN", "PRKAR1A", "PIK3C2G", "PDPK1", "PAK1", "NFE2L2", "MYOD1", "MRE11A", "MITF", "MEN1", "MED12", "MDM2", "LATS1", "KDM5A", "JAK2", "IL7R", "IDH2", "HGF", "GRIN2A", "GATA1", "FLT1", "FGFR1", "EZH2", "ETV1", "ESR1", "ERBB4", "DCUN1D1", "CTCF", "CRLF2", "CBL", "BTK", "BRIP1", "BMPR1A", "BLM", "BCL2", "YES1", "XPO1", "TP63", "TOP1", "TMPRSS2", "SUFU", "STAG2", "SOX2", "ROS1", "RET", "RASA1", "PTPRS", "PBRM1", "NTRK3", "NTRK2", "NSD1", "NOTCH3", "MYCN", "MET", "MAP3K13", "KIT", "KDM5C", "JAK1", "IGF1", "FAT1", "EPHB1", "EPHA5", "CARD11", "BCOR", "ATRX", "ASXL2", "ARID2", "APC", "AMER1", "KDM6A", "NTRK1", "PMS1", "HNF1A", "SHQ1", "PIK3R2", "EED", "MSH6", "U2AF1", "HRAS", "HIST1H1C", "CIC", "PHOX2B", "CCND1","CDKN2A", "BAP1", "NKX2-1", "RB1", "KMT2A", "PTPRD", "PDGFRA", "E2F3", "PTCH1", "ALOX12B")
-
-mutation_heatmap_red <- mutation_heatmap[!grepl(paste(genes, collapse="|"), rownames(mutation_heatmap)), ]
-
-df1_red <- df1[!grepl(paste(genes, collapse="|"), df1$genes), ]
-
-df1_red$genes <- factor(df1_red$genes, levels = dput(rev(rownames(mutation_heatmap_red))))
-
-cols <- c('A'="#08306B",'B'="#08519C",'C'="#2171B5",'D'="#6BAED6",'E'="#9ECAE1",'F'="#C6DBEF",'G'="gray85")
-
-comb<-expand.grid(samples = unique(df1_red$samples), genes = unique(df1_red$genes), ccf=".", clone = ".", loh=".", ccf_groupA = ".", types = ".", ccf_groupB="G")
-
-df3_red <- as.data.frame(rbind(comb, df1_red))
-
-df2_red <-subset(df1_red,clone=="Clonal")
-
-pdf("CCF_Heatmap_ggplot_2.pdf", width=5, height=10)
-
-p <- ggplot(df3_red, aes(x=samples,y=genes,fill=ccf_groupB, group=loh)) + geom_tile(width=0.8,height=0.8) + geom_tile(data=df2_red,aes(samples, genes),size=0.5,fill=NA,width=0.8,height=0.8,color="gold3") + scale_fill_manual(values = cols, name="CCF",guide = FALSE); p + geom_segment( aes(x=xmin,xend=xmax,y=ymin,yend=ymax), subset(ggplot_build(p)$data[[1]],group==2), inherit.aes=F,color="white",size=0.5) + theme(axis.text.x=element_text(size=10,  family = "sans", angle = 90, hjust=0, vjust=0)) + theme(axis.text.y=element_text(size=10, face="italic", family = "sans")) + scale_x_discrete(name="",position="top",drop=FALSE) + scale_y_discrete(name="",drop=FALSE) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), panel.border = element_blank()) + theme(legend.position="none") + theme(axis.ticks = element_blank()) + theme(axis.text=element_text(colour = "black"))
-
-dev.off()
-###########################
