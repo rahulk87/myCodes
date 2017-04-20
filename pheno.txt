@@ -1,0 +1,16 @@
+ID	Tumor Stage	Histologic Grade	Histologic Type	Associated Borderline Tumor
+MOC4T	IIIA	3	Intestinal	Unknown
+MOC31T	IA	1	Intestinal	Yes
+MOC4849T	IA	2	Intestinal	No
+MOC51T	IA	1	Intestinal	Yes
+MOC52T	IIIC	2	Unknown	No
+MOC60T	IA	1	Intestinal	Yes
+MOC6768T	IA	2	Intestinal	Yes
+MOC21T	IC	2	Unknown	Unknown
+MOC25T	IA	1	Gastric	Yes
+MOC72T	IIIB	3	Unknown	No
+MOC17T	IA	1	Simple	Yes
+MOC19T	IIC	2	Unknown	No
+MOC38T	IC	2	Gastric	No
+MOC46T	IA	1	Gastric	Yes
+MOC62T	IIB	3	Intestinal	Yes
