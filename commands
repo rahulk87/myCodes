@@ -1,0 +1,2 @@
+1. Rsync over ssh
+rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress x.txt hal:
