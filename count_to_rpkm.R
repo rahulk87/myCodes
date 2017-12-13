@@ -46,4 +46,4 @@ genes <- unique( genes )
 exonExprsVals <- getExprs( exonsByGene, count[,2:4]) ## here provide number of columns with count
 geneSymbols <- sapply(mget(genes, org.Hs.egSYMBOL, ifnotfound = NA), function (x) x[1])
 x <- cbind(count$gene, exonExprsVals$rpkm)
-write.table(x, file="test.txt", sep="\t", row.names=FALSE, quote=FALSE)
+write.table(x, file="RPKM.txt", sep="\t", row.names=FALSE, quote=FALSE)
