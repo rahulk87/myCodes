@@ -1,0 +1,1 @@
+ggplot(data=corr, aes(x=Category, y=Kappa_coefficient)) + geom_bar(stat="identity") # bar plot
