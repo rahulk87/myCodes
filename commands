@@ -1,2 +1,3 @@
 1. Rsync over ssh
 rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress x.txt hal:
+barplot(counts, col=c("darkblue","red"), las=2, ylim=c(0, 1000), ylab="Number of Mutations", legend=c("All Mutations", "Non-synonymous"), beside=TRUE, args.legend = list(x ='topleft', inset=c(0.005,0)))
